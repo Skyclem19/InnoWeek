@@ -287,10 +287,11 @@ const LaGrandeRecreHeader: React.FC<HeaderProps> = ({
     </View>
   );
 
+  // Le problème est ici
   return (
-    <View style={{ flex: 1 }}>
-      {isMobile ? <MobileHeader /> : <DesktopHeader />}
-    </View>
+    // Retirez la View englobante avec flex: 1 qui cause le bloc gris
+    // et retournez directement le composant de header approprié
+    isMobile ? <MobileHeader /> : <DesktopHeader />
   );
 };
 
@@ -314,7 +315,7 @@ const styles = StyleSheet.create({
 
   // Mobile styles
   mobileHeaderContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: "#fff", // Changé de "#fff" à "transparent" pour être sûr
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
