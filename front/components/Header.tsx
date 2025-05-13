@@ -8,13 +8,17 @@ import {
   StyleSheet,
   Dimensions,
   ScrollView,
+  StatusBar,
+  SafeAreaView,
 } from "react-native";
 import { Feather, Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 // Interfaces for TypeScript
 interface Category {
   id: string;
   name: string;
+  route?: string;
 }
 
 interface HeaderProps {
@@ -26,6 +30,7 @@ const LaGrandeRecreHeader: React.FC<HeaderProps> = ({
   onSearch,
   onCategorySelect,
 }) => {
+  const navigation = useNavigation<any>();
   const [windowWidth, setWindowWidth] = useState<number>(
     Dimensions.get("window").width
   );
@@ -40,6 +45,12 @@ const LaGrandeRecreHeader: React.FC<HeaderProps> = ({
     return () => subscription.remove();
   }, []);
 
+  // Set status bar color
+  useEffect(() => {
+    StatusBar.setBarStyle("light-content");
+    StatusBar.setBackgroundColor("#0A3160");
+  }, []);
+
   // Determine if we should show mobile or desktop layout
   const isMobile = windowWidth < 768;
 
@@ -47,7 +58,7 @@ const LaGrandeRecreHeader: React.FC<HeaderProps> = ({
   const categories: Category[] = [
     { id: "all", name: "Toutes" },
     { id: "age", name: "Age" },
-    { id: "societe", name: "Jeux de société" },
+    { id: "societe", name: "Jeux de société", route: "Produit" },
     { id: "marques", name: "Marques & Héros" },
     { id: "puzzle", name: "Puzzle" },
     { id: "loisirs", name: "Loisirs et création" },
@@ -65,9 +76,18 @@ const LaGrandeRecreHeader: React.FC<HeaderProps> = ({
   };
 
   const handleCategorySelect = (categoryId: string) => {
-    if (onCategorySelect) {
+    // Trouver la catégorie sélectionnée
+    const selectedCategory = categories.find(
+      (category) => category.id === categoryId
+    );
+
+    // Si la catégorie a une route définie, naviguer vers cette route
+    if (selectedCategory?.route) {
+      navigation.navigate(selectedCategory.route);
+    } else if (onCategorySelect) {
       onCategorySelect(categoryId);
     }
+
     setIsMobileMenuOpen(false);
   };
 
@@ -79,32 +99,47 @@ const LaGrandeRecreHeader: React.FC<HeaderProps> = ({
   // Logo component
   const Logo = () => (
     <Image
-      source={{ uri: "/api/placeholder/150/80" }}
+      source={require("../assets/lgr.png")}
       style={isMobile ? styles.logoMobile : styles.logoDesktop}
       resizeMode="contain"
     />
   );
 
+  // Navigation handlers
+  const navigateTo = (route: string) => {
+    navigation.navigate(route);
+    setIsMobileMenuOpen(false);
+  };
+
   // Mobile Header
   const MobileHeader = () => (
     <View style={styles.mobileHeaderContainer}>
-      <View style={styles.mobileTopBar}>
-        <TouchableOpacity onPress={toggleMobileMenu}>
-          <View style={styles.hamburgerMenu}>
-            <View style={styles.hamburgerLine} />
-            <View style={styles.hamburgerLine} />
-            <View style={styles.hamburgerLine} />
-          </View>
-        </TouchableOpacity>
+      <View style={styles.statusBarBackground} />
+      <SafeAreaView style={{ backgroundColor: "#0A3160" }}>
+        <View style={styles.mobileTopBar}>
+          <TouchableOpacity onPress={toggleMobileMenu}>
+            <View style={styles.hamburgerMenu}>
+              <View style={styles.hamburgerLine} />
+              <View style={styles.hamburgerLine} />
+              <View style={styles.hamburgerLine} />
+            </View>
+          </TouchableOpacity>
 
-        <View style={styles.logoContainer}>
-          <Logo />
+          <TouchableOpacity
+            style={styles.logoContainer}
+            onPress={() => navigateTo("Home")}
+          >
+            <Logo />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.cartButton}
+            onPress={() => navigateTo("Panier")}
+          >
+            <Feather name="shopping-bag" size={24} color="white" />
+          </TouchableOpacity>
         </View>
-
-        <TouchableOpacity style={styles.cartButton}>
-          <Feather name="shopping-bag" size={24} color="white" />
-        </TouchableOpacity>
-      </View>
+      </SafeAreaView>
 
       {isMobileMenuOpen && (
         <View style={styles.mobileMenu}>
@@ -124,6 +159,14 @@ const LaGrandeRecreHeader: React.FC<HeaderProps> = ({
             </TouchableOpacity>
           </View>
 
+          <TouchableOpacity
+            style={styles.menuItemMobile}
+            onPress={() => navigateTo("Home")}
+          >
+            <Feather name="home" size={20} color="#0A3160" />
+            <Text style={styles.menuItemTextMobile}>Home</Text>
+          </TouchableOpacity>
+
           <ScrollView style={styles.categoriesScrollMobile}>
             {categories.map((category) => (
               <TouchableOpacity
@@ -137,7 +180,10 @@ const LaGrandeRecreHeader: React.FC<HeaderProps> = ({
           </ScrollView>
 
           <View style={styles.mobileActionButtons}>
-            <TouchableOpacity style={styles.actionButton}>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => navigateTo("Profil")}
+            >
               <Ionicons name="person-outline" size={22} color="#0A3160" />
               <Text style={styles.actionButtonText}>Compte</Text>
             </TouchableOpacity>
@@ -147,7 +193,10 @@ const LaGrandeRecreHeader: React.FC<HeaderProps> = ({
               <Text style={styles.actionButtonText}>Liste d'envies</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.actionButton}>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => navigateTo("Panier")}
+            >
               <Feather name="shopping-bag" size={22} color="#0A3160" />
               <Text style={styles.actionButtonText}>Panier</Text>
             </TouchableOpacity>
@@ -160,43 +209,63 @@ const LaGrandeRecreHeader: React.FC<HeaderProps> = ({
   // Desktop Header
   const DesktopHeader = () => (
     <View style={styles.desktopHeaderContainer}>
-      <View style={styles.desktopTopBar}>
-        <View style={styles.logoContainer}>
-          <Logo />
-        </View>
-
-        <View style={styles.storeLocator}>
-          <Feather name="map-pin" size={20} color="#0A3160" />
-          <Text style={styles.storeText}>Magasins</Text>
-        </View>
-
-        <View style={styles.searchBarDesktop}>
-          <TextInput
-            style={styles.searchInputDesktop}
-            placeholder="Je recherche..."
-            value={searchText}
-            onChangeText={setSearchText}
-            onSubmitEditing={handleSearch}
-          />
-        </View>
-
-        <View style={styles.desktopActionButtons}>
-          <TouchableOpacity style={styles.actionButtonDesktop}>
-            <Ionicons name="person-outline" size={24} color="#0A3160" />
-            <Text style={styles.actionButtonTextDesktop}>Compte</Text>
+      <View style={styles.statusBarBackground} />
+      <SafeAreaView style={{ backgroundColor: "#0A3160" }}>
+        <View style={styles.desktopTopBar}>
+          <TouchableOpacity
+            style={styles.homeButton}
+            onPress={() => navigateTo("Home")}
+          >
+            <Feather name="home" size={24} color="white" />
+            <Text style={styles.homeButtonText}>Home</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionButtonDesktop}>
-            <Ionicons name="heart-outline" size={24} color="#0A3160" />
-            <Text style={styles.actionButtonTextDesktop}>Liste d'envies</Text>
-          </TouchableOpacity>
+          <View style={styles.logoContainer}>
+            <TouchableOpacity onPress={() => navigateTo("Home")}>
+              <Logo />
+            </TouchableOpacity>
+          </View>
 
-          <TouchableOpacity style={styles.actionButtonDesktop}>
-            <Feather name="shopping-bag" size={24} color="#0A3160" />
-            <Text style={styles.actionButtonTextDesktop}>Panier</Text>
-          </TouchableOpacity>
+          <View style={styles.searchBarDesktop}>
+            <TextInput
+              style={styles.searchInputDesktop}
+              placeholder="Je recherche..."
+              value={searchText}
+              onChangeText={setSearchText}
+              onSubmitEditing={handleSearch}
+            />
+            <TouchableOpacity
+              style={styles.searchIconDesktop}
+              onPress={handleSearch}
+            >
+              <Feather name="search" size={20} color="gray" />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.desktopActionButtons}>
+            <TouchableOpacity
+              style={styles.actionButtonDesktop}
+              onPress={() => navigateTo("Profil")}
+            >
+              <Ionicons name="person-outline" size={24} color="white" />
+              <Text style={styles.actionButtonTextDesktop}>Compte</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.actionButtonDesktop}>
+              <Ionicons name="heart-outline" size={24} color="white" />
+              <Text style={styles.actionButtonTextDesktop}>Liste d'envies</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.actionButtonDesktop}
+              onPress={() => navigateTo("Panier")}
+            >
+              <Feather name="shopping-bag" size={24} color="white" />
+              <Text style={styles.actionButtonTextDesktop}>Panier</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </SafeAreaView>
 
       <ScrollView
         horizontal
@@ -218,11 +287,19 @@ const LaGrandeRecreHeader: React.FC<HeaderProps> = ({
     </View>
   );
 
-  return isMobile ? <MobileHeader /> : <DesktopHeader />;
+  return (
+    <View style={{ flex: 1 }}>
+      {isMobile ? <MobileHeader /> : <DesktopHeader />}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
   // Shared styles
+  statusBarBackground: {
+    height: StatusBar.currentHeight,
+    backgroundColor: "#0A3160",
+  },
   logoDesktop: {
     width: 150,
     height: 80,
@@ -288,6 +365,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  menuItemMobile: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
+  },
+  menuItemTextMobile: {
+    fontSize: 16,
+    color: "#0A3160",
+    marginLeft: 10,
+  },
   categoriesScrollMobile: {
     maxHeight: 300,
   },
@@ -329,28 +418,35 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 15,
     paddingHorizontal: 24,
+    backgroundColor: "#0A3160",
   },
-  storeLocator: {
+  homeButton: {
     flexDirection: "row",
     alignItems: "center",
-    marginLeft: 20,
   },
-  storeText: {
-    marginLeft: 5,
-    color: "#0A3160",
+  homeButtonText: {
+    marginLeft: 8,
+    color: "white",
     fontWeight: "500",
+    fontSize: 14,
   },
   searchBarDesktop: {
     flex: 1,
+    flexDirection: "row",
     backgroundColor: "#f5f5f5",
     borderRadius: 5,
     marginHorizontal: 20,
     height: 40,
+    alignItems: "center",
   },
   searchInputDesktop: {
+    flex: 1,
     padding: 10,
     fontSize: 14,
     height: 40,
+  },
+  searchIconDesktop: {
+    padding: 10,
   },
   desktopActionButtons: {
     flexDirection: "row",
@@ -363,7 +459,7 @@ const styles = StyleSheet.create({
   actionButtonTextDesktop: {
     marginTop: 5,
     fontSize: 12,
-    color: "#0A3160",
+    color: "white",
   },
   categoriesScrollDesktop: {
     backgroundColor: "#f9f9f9",

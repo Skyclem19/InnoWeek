@@ -1,11 +1,14 @@
-import { View, Text, StyleSheet } from "react-native";
-import NavBar from "../components/NavBar";
+import { View, Text, StyleSheet, SafeAreaView, StatusBar } from "react-native";
+import Header from "../components/Header";
 
 export default function Panier() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Page Panier</Text>
-      <NavBar />
+      <StatusBar backgroundColor="#0A3160" barStyle="light-content" />
+      <Header />
+      <View style={styles.content}>
+        <Text style={styles.title}>Page Panier</Text>
+      </View>
     </View>
   );
 }
@@ -13,12 +16,16 @@ export default function Panier() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-between",
-    paddingVertical: 40,
-    paddingHorizontal: 20,
+    backgroundColor: "#f5f5f5",
+  },
+  content: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
     fontSize: 24,
     textAlign: "center",
+    padding: 20,
   },
 });

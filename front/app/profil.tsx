@@ -1,9 +1,18 @@
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-import NavBar from "../components/NavBar";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  SafeAreaView,
+  StatusBar,
+} from "react-native";
+import Header from "../components/Header";
 
 export default function Profil() {
   return (
     <View style={styles.container}>
+      <StatusBar backgroundColor="#0A3160" barStyle="light-content" />
+      <Header />
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -88,7 +97,6 @@ export default function Profil() {
           </View>
         </View>
       </ScrollView>
-      <NavBar />
     </View>
   );
 }
@@ -96,13 +104,12 @@ export default function Profil() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-between",
     backgroundColor: "#f5f5f5",
   },
   scrollView: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingTop: 20,
     paddingBottom: 20,
   },
   profileSection: {
