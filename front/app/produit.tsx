@@ -10,7 +10,12 @@ import {
   Dimensions,
 } from "react-native";
 import Header from "../components/Header";
-import { Feather, Ionicons, FontAwesome } from "@expo/vector-icons";
+import {
+  Feather,
+  Ionicons,
+  FontAwesome,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 
 export default function Produit() {
   const [favorite, setFavorite] = useState(false);
@@ -23,6 +28,15 @@ export default function Produit() {
     require("../assets/produit3.png"),
     require("../assets/produit4.png"),
   ];
+
+  // Prix et points fidélité
+  const productPrice = 13.99;
+  const loyaltyPoints =
+    productPrice % 1 >= 0.01
+      ? Math.ceil(productPrice)
+      : Math.floor(productPrice);
+  const ecoResponsiblePoints = 3;
+  const totalPoints = loyaltyPoints + ecoResponsiblePoints;
 
   const toggleFavorite = () => {
     setFavorite(!favorite);
@@ -47,6 +61,11 @@ export default function Produit() {
             <Text style={styles.brandText}>SPEEDWEAR</Text>
           </View>
 
+          {/* Prix mis en évidence */}
+          <View style={styles.priceTag}>
+            <Text style={styles.priceTagText}>{productPrice.toFixed(2)} €</Text>
+          </View>
+
           <Image
             source={productImages[selectedImageIndex]}
             style={styles.mainImage}
@@ -57,6 +76,47 @@ export default function Produit() {
             <Feather name="search" size={14} color="#0A3160" />
             <Text style={styles.zoomText}>Zoom</Text>
           </TouchableOpacity>
+
+          {/* Section des boutons d'achat */}
+          <View style={styles.purchaseButtonsContainer}>
+            <TouchableOpacity style={styles.addToCartButton}>
+              <FontAwesome name="shopping-cart" size={18} color="white" />
+              <Text style={styles.addToCartButtonText}>AJOUTER AU PANIER</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.buyNowButton}>
+              <FontAwesome name="bolt" size={18} color="white" />
+              <Text style={styles.buyNowButtonText}>ACHETER MAINTENANT</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Points fidélité et éco-responsable */}
+          <View style={styles.loyaltyPointsContainer}>
+            <View style={styles.pointsRow}>
+              <FontAwesome name="star" size={16} color="#4CAF50" />
+              <Text style={styles.pointsText}>
+                <Text style={styles.pointsValue}>{loyaltyPoints} points</Text>{" "}
+                fidélité
+              </Text>
+            </View>
+            <View style={styles.pointsRow}>
+              <MaterialCommunityIcons name="leaf" size={16} color="#4CAF50" />
+              <Text style={styles.pointsText}>
+                <Text style={styles.pointsValue}>
+                  +{ecoResponsiblePoints} points
+                </Text>{" "}
+                éco-responsable
+              </Text>
+            </View>
+            <View style={styles.totalPointsRow}>
+              <Text style={styles.totalPointsText}>
+                Total:{" "}
+                <Text style={styles.totalPointsValue}>
+                  {totalPoints} points
+                </Text>
+              </Text>
+            </View>
+          </View>
 
           {/* Miniatures d'images */}
           <View style={styles.thumbnailContainer}>
@@ -137,21 +197,16 @@ export default function Produit() {
             </Text>
           </View>
 
-          <Text style={styles.price}>13,99 €</Text>
+          <View style={styles.deliveryInfoContainer}>
+            <View style={styles.stockSection}>
+              <Text style={styles.stockLabel}>STOCK WEB :</Text>
+              <Text style={styles.stockStatus}>DISPONIBLE</Text>
+            </View>
 
-          <TouchableOpacity style={styles.deliveryButton}>
-            <FontAwesome name="truck" size={18} color="white" />
-            <Text style={styles.deliveryButtonText}>EN LIVRAISON</Text>
-          </TouchableOpacity>
-
-          <View style={styles.stockSection}>
-            <Text style={styles.stockLabel}>STOCK WEB :</Text>
-            <Text style={styles.stockStatus}>DISPONIBLE</Text>
+            <Text style={styles.deliveryInfo}>
+              Livraison en 24 à 72h à partir de 45€
+            </Text>
           </View>
-
-          <Text style={styles.deliveryInfo}>
-            Livraison en 24 à 72h à partir de 45€
-          </Text>
 
           <View style={styles.storeSection}>
             <Text style={styles.storeTitle}>RÉSERVATION EN MAGASIN</Text>
@@ -212,6 +267,22 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 12,
   },
+  // Nouveau style pour afficher le prix plus visible
+  priceTag: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    backgroundColor: "#0A3160",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    zIndex: 1,
+  },
+  priceTagText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
   mainImage: {
     width: "100%",
     height: 250,
@@ -220,7 +291,7 @@ const styles = StyleSheet.create({
   zoomButton: {
     position: "absolute",
     right: 20,
-    bottom: 120,
+    bottom: 180,
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "rgba(255, 255, 255, 0.8)",
@@ -232,6 +303,75 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#0A3160",
     marginLeft: 4,
+  },
+  // Styles pour les boutons d'achat
+  purchaseButtonsContainer: {
+    marginVertical: 15,
+  },
+  addToCartButton: {
+    backgroundColor: "#4CAF50",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    borderRadius: 4,
+    marginBottom: 10,
+  },
+  addToCartButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
+  buyNowButton: {
+    backgroundColor: "#0A3160",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    borderRadius: 4,
+  },
+  buyNowButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
+  // Styles pour les points fidélité
+  loyaltyPointsContainer: {
+    backgroundColor: "#f5f5f5",
+    borderRadius: 4,
+    padding: 12,
+    marginBottom: 15,
+    borderLeftWidth: 3,
+    borderLeftColor: "#4CAF50",
+  },
+  pointsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 6,
+  },
+  pointsText: {
+    fontSize: 13,
+    color: "#555",
+    marginLeft: 8,
+  },
+  pointsValue: {
+    fontWeight: "bold",
+    color: "#333",
+  },
+  totalPointsRow: {
+    marginTop: 5,
+    paddingTop: 5,
+    borderTopWidth: 1,
+    borderTopColor: "#ddd",
+  },
+  totalPointsText: {
+    fontSize: 13,
+    color: "#555",
+    textAlign: "right",
+  },
+  totalPointsValue: {
+    fontWeight: "bold",
+    color: "#4CAF50",
   },
   thumbnailContainer: {
     flexDirection: "row",
@@ -338,25 +478,8 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#555",
   },
-  price: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 15,
-  },
-  deliveryButton: {
-    backgroundColor: "#0A3160",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 12,
-    borderRadius: 4,
-    marginBottom: 15,
-  },
-  deliveryButtonText: {
-    color: "white",
-    fontWeight: "bold",
-    marginLeft: 10,
+  deliveryInfoContainer: {
+    marginBottom: 20,
   },
   stockSection: {
     flexDirection: "row",
@@ -376,7 +499,6 @@ const styles = StyleSheet.create({
   deliveryInfo: {
     fontSize: 13,
     color: "#555",
-    marginBottom: 20,
   },
   storeSection: {
     borderTopWidth: 1,
