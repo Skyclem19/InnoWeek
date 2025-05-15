@@ -80,7 +80,7 @@ export default function Profil() {
               <Text style={styles.quizButtonText}>QUIZ JOURNALIER</Text>
             </View>
             <View style={styles.quizPointsContainer}>
-              <Text style={styles.quizPointsText}>1-6 pts</Text>
+              <Text style={styles.quizPointsText}>1-5 pts</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -119,13 +119,8 @@ export default function Profil() {
                   <View style={styles.infoItem}>
                     <Text style={styles.infoLabel}>Adresse email</Text>
                     <Text style={styles.infoValue}>
-                      thomas.duchamp@gmail.com
+                      COUCOU-LE-JURY@gmail.com
                     </Text>
-                  </View>
-
-                  <View style={styles.infoItem}>
-                    <Text style={styles.infoLabel}>Numéro de portable</Text>
-                    <Text style={styles.infoValue}>Non renseigné</Text>
                   </View>
 
                   <View style={styles.infoItem}>
@@ -135,27 +130,27 @@ export default function Profil() {
 
                   <View style={styles.infoItem}>
                     <Text style={styles.infoLabel}>Prénom</Text>
-                    <Text style={styles.infoValue}>Thomas</Text>
+                    <Text style={styles.infoValue}>Maurice</Text>
                   </View>
 
                   <View style={styles.infoItem}>
                     <Text style={styles.infoLabel}>Nom</Text>
-                    <Text style={styles.infoValue}>Duchamp</Text>
+                    <Text style={styles.infoValue}>Grunberg</Text>
                   </View>
 
                   <View style={styles.infoItem}>
                     <Text style={styles.infoLabel}>Téléphone</Text>
-                    <Text style={styles.infoValue}>06 12 34 56 78</Text>
+                    <Text style={styles.infoValue}>08 09 40 14 01</Text>
                   </View>
 
                   <View style={styles.infoItem}>
                     <Text style={styles.infoLabel}>Date d'anniversaire</Text>
-                    <Text style={styles.infoValue}>12 août 1994</Text>
+                    <Text style={styles.infoValue}>24 octobre 1977 </Text>
                   </View>
 
                   <View style={styles.infoItem}>
                     <Text style={styles.infoLabel}>Pseudonyme</Text>
-                    <Text style={styles.infoValue}>Thomas Duchamp</Text>
+                    <Text style={styles.infoValue}>Maurice Grunberg</Text>
                   </View>
                 </>
               )}
